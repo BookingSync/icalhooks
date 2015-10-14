@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>iCal Push - <%= @item[:title] %></title>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/stylesheets/application.css">
+    <link rel="stylesheet" href="/assets/stylesheets/highlight.css">
+
+    <!-- you don't need to keep this, but it's cool for stats! -->
+    <meta name="generator" content="nanoc <%= Nanoc::VERSION %>">
+  </head>
+  <body>
+    <div class="container">
+      <div class="sheet">
+        <div class="sheet-header">
+          <h1><%= @item[:title] %></h1>
+        </div>
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>
