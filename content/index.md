@@ -5,9 +5,21 @@ subtitle: iCal Hooks is a lightweight subscription layer on top of iCal.
 
 **Status**: This document is a first draft and made to [open discussions](https://github.com/BookingSync/icalhooks) to improve calendar update time and server load.
 
+# Motivation
+
+Their's a common trend to develop real-time applications, users don't like stale data and latency as they degrade their experience. Whether it's during a vacation rental booking process, where availability needs to be as real-time as possible to do instant booking or when connecting events or scheduling systems together like Google Calendar and your appointment software.
+
+# The goal
+
+The goal is to add the smallest layer possible to bring real-time support on top of current iCal technologies and with the minimum cost.
+
 # What is iCal Hooks?
 
-iCal Hooks is allowing to notify a consumer when something changed, it's webhooks on top of iCal. Here a tiny call to a given URL to notify that the iCal content should be refetched.
+iCal Hooks allow a iCal consumer to subscribe to changes so he's notified in near real-time. It's webhooks with a really simple subscription logic.
+
+# What is not iCal Hooks?
+
+iCal Hooks does not solve synchronization issues but lower the latency for a provider to send changes to a consumer service. It then reduce conflicts and provide near real-time updates and can also lower server load as you don't need high frequency pulls any longer.
 
 # How does it works?
 
@@ -15,7 +27,9 @@ iCal Hooks is allowing to notify a consumer when something changed, it's webhook
 
 2) The consumer includes a **http header** with a **hooks url** when pulling the iCal feed.
 
-3) The provider **store this hooks url** and **send a request** to it the next time a change is made on it's associated iCal feed.
+3) The provider **store this hooks url** and **send a request** to it the next time a change is made on it's associated iCal feed. This URL is then removed as meant to be a one time subscription. This help handling throttling.
+
+4) If the consumer wants to unsubscribe, it just don't include the HTTP `header` on future pulls.
 
 # Example
 
@@ -38,15 +52,15 @@ X-ICALHOOKS-URL: http://consumer.com/icalhooks
 
 ## Step 2
 
-**Provider** receice the request from Consumer and:
+**Provider** receive the request from Consumer and:
 
-a) Stores the iCal Hooks URL, certainly in database. `http://consumer.com/icalhooks` in our example.
+a) Store the iCal Hooks URL, `http://consumer.com/icalhooks` in our example.
 
-b) Responds as expected by returning the iCal feed.
+b) Respond as expected by returning the iCal feed.
 
 ## Step 3
 
-An update on **Provider** happen, Provider will then make a `HEAD` request to the iCal Hooks URL stored in Step 2.
+An update on **Provider** happen, Provider will then make a `HEAD` request to the iCal Hooks URL stored in Step 2 and remove this URL from it's storage.
 
 Example query:
 
@@ -56,17 +70,7 @@ HEAD http://consumer.com/icalhooks HTTP/1.1
 <blank line>
 ~~~
 
-# Use cases
-
-## For vacation rentals
-
-Current iCal integrations mostly pull iCal updates every 6 to 12 hours. The risk of double bookings is then consireable and makes current integrations dangerous when used with instant bookings.
-
-iCal Hooks makes availability updated in couple seconds which makes instant bookings safe (a risk is still present but reduced to a really low level).
-
 # Security
 
-The current design without any limitation on which consumer subscribe to a hook
-going to which targeted domain could lead to DDOS attacks from the provider to a selected target.
-
-Various authentication solutions can be discussed to mitigate this risk and at least know which consumer is potentially at the origin of such abuse.
+The current design can allow a malicious consumer to make the provider send `HEAD` requests to a targeted URL. Rate limiting can be added by the provider to mitigate such risk.
+Adding authentication on the subscription could be added but the current design makes it really easy to make this specification adopted with a known risk being low and mitigeable. If we realize that abuse are made, we can improve this specification design and add an extra authentication layer but the cost of developement and ease of adoption would be dramatically impacted.
