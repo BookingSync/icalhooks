@@ -29,7 +29,7 @@ iCal Hooks does not solve synchronization issues but lower the latency for a pro
 
 3) The provider **store this hooks url** and **send a request** to it the next time a change is made on it's associated iCal feed. This URL is then removed as meant to be a one time subscription. This help handling throttling.
 
-4) If the consumer wants to unsubscribe, it just don't include the HTTP `header` on future pulls.
+4) If the consumer wants to **unsubscribe**, it just don't include the HTTP header on future pulls.
 
 # Example
 
@@ -73,4 +73,5 @@ HEAD http://consumer.com/icalhooks HTTP/1.1
 # Security
 
 The current design can allow a malicious consumer to make the provider send `HEAD` requests to a targeted URL. Rate limiting can be added by the provider to mitigate such risk.
+
 Adding authentication on the subscription could be added but the current design makes it really easy to make this specification adopted with a known risk being low and mitigeable. If we realize that abuse are made, we can improve this specification design and add an extra authentication layer but the cost of developement and ease of adoption would be dramatically impacted.
