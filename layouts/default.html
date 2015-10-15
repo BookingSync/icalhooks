@@ -15,7 +15,12 @@
     <div class="container">
       <div class="sheet">
         <div class="sheet-header">
-          <h1><%= @item[:title] %></h1>
+          <h1>
+            <%= @item[:title] %>
+            <% if @item[:subtitle] %>
+              <br><small><%= @item[:subtitle] %></small>
+            <% end %>
+          </h1>
         </div>
         <%= yield %>
       </div>
