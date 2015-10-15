@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>iCal Hooks - Makes iCal content updated after seconds, not hours</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/stylesheets/application.css">
+    <link rel="stylesheet" href="/assets/stylesheets/highlight.css">
+
+    <!-- you don't need to keep this, but it's cool for stats! -->
+    <meta name="generator" content="nanoc 3.8.0">
+  </head>
+  <body>
+    <div class="container">
+      <div class="sheet">
+        <div class="sheet-header">
+          <h1>
+            Makes iCal content updated after seconds, not hours
+            
+              <br><small>iCal Hooks is a lightweight subscription layer on top of iCal.</small>
+            
+          </h1>
+        </div>
+        
+<p><strong>Status</strong>: This document is a first draft and made to <a href="https://github.com/BookingSync/icalhooks">open discussions</a> to improve calendar update time and server load.</p>
+
+<h2 id="what-is-ical-hooks">What is iCal Hooks?</h2>
+
+<p>iCal Hooks is allowing to notify a consumer when something changed, it’s webhooks on top of iCal. Here a tiny call to a given URL to notify that the iCal content should be refetched.</p>
+
+<h2 id="how-does-it-works">How does it works?</h2>
+
+<p>1) It’s based on iCal and <strong>fully backward compatible</strong>.</p>
+
+<p>2) The consumer includes a <strong>http header</strong> with a <strong>hooks url</strong> when pulling the iCal feed.</p>
+
+<p>3) The provider <strong>store this hooks url</strong> and <strong>send a request</strong> to it the next time a change is made on it’s associated iCal feed.</p>
+
+<h2 id="example">Example</h2>
+
+<p><strong>Provider</strong> is the originating server and exposes an iCal feed at <code>http://provider.com/ical.ics</code></p>
+
+<p><strong>Consumer</strong> is a client subscribing to <code>http://provider.com/ical.ics</code></p>
+
+<h3 id="step-1">Step 1</h3>
+
+<p><strong>Consumer</strong> make a GET request to <code>http://provider.com/ical.ics</code> including a <code>X-ICALHOOKS-URL</code> HTTP Header.</p>
+
+<p>Sample query:</p>
+
+<pre><code>GET http://provider.com/ical.ics HTTP/1.1
+X-ICALHOOKS-URL: http://consumer.com/icalhooks
+&lt;blank line&gt;
+&lt;blank line&gt;
+</code></pre>
+
+<h3 id="step-2">Step 2</h3>
+
+<p><strong>Provider</strong> receice the request from Consumer and:</p>
+
+<p>a) Stores the iCal Hooks URL, certainly in database. <code>http://consumer.com/icalhooks</code> in our example.</p>
+
+<p>b) Responds as expected by returning the iCal feed.</p>
+
+<h3 id="step-3">Step 3</h3>
+
+<p>An update on <strong>Provider</strong> happen, Provider will then make a <code>HEAD</code> request to the iCal Hooks URL stored in Step 2.</p>
+
+<p>Example query:</p>
+
+<pre><code>HEAD http://consumer.com/icalhooks HTTP/1.1
+&lt;blank line&gt;
+&lt;blank line&gt;
+</code></pre>
+
+<h2 id="use-cases">Use cases</h2>
+
+<h3 id="for-vacation-rentals">For vacation rentals</h3>
+
+<p>Current iCal integrations mostly pull iCal updates every 6 to 12 hours. The risk of double bookings is then consireable and makes current integrations dangerous when used with instant bookings.</p>
+
+<p>iCal Hooks makes availability updated in couple seconds which makes instant bookings safe (a risk is still present but reduced to a really low level).</p>
+
+<h2 id="security">Security</h2>
+
+<p>The current design without any limitation on which consumer subscribe to a hook
+going to which targeted domain could lead to DDOS attacks from the provider to a selected target.</p>
+
+<p>Various authentication solutions can be discussed to mitigate this risk and at least know which consumer is potentially at the origin of such abuse.</p>
+
+      </div>
+    </div>
+  </body>
+</html>
