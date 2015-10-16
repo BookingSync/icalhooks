@@ -60,7 +60,11 @@ b) Respond as expected by returning the iCal feed.
 
 ## Step 3
 
-An update on **Provider** happen, Provider will then make a `HEAD` request to the iCal Hooks URL stored in Step 2 and remove this URL from it's storage.
+An update on **Provider** happen, Provider will:
+
+a) make a `HEAD` request to the iCal Hooks URL stored in Step 2.
+
+b) remove this URL from it's storage.
 
 Example query:
 
