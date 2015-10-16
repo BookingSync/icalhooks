@@ -21,7 +21,7 @@ iCal Hooks allow a iCal consumer to subscribe to changes so he's notified in nea
 
 iCal Hooks does not solve synchronization issues but lower the latency for a provider to send changes to a consumer service. It then reduce conflicts and provide near real-time updates and can also lower server load as you don't need high frequency pulls any longer.
 
-# How does it works?
+# How does it work?
 
 1) It's based on iCal and **fully backward compatible**.
 
