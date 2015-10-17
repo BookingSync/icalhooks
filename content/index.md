@@ -7,7 +7,7 @@ subtitle: iCal Hooks is a lightweight subscription layer on top of iCal.
 
 # Motivation
 
-Todays consumers are increasingly expecting instant on-demand experiences. Whether scheduling appointments or booking vacation rentals, fast & accurate information results in more successful consumer interactions. Stale information, such as calendar data, only results in lost opppertunties.
+Todays consumers are increasingly expecting instant on-demand experiences. Whether scheduling appointments or booking vacation rentals, fast & accurate information results in more successful consumer interactions. Stale information, such as calendar data, only results in lost opportunities.
 
 ... an example ... 6 hour delay...
 
@@ -15,16 +15,16 @@ Today, iCal consumption is primarily pull based. Consumers have a choice: pull f
 
 # Goals
 
-* Mitigate stale data, which results in degraded user experiences
+* mitigate stale data, which results in degraded user experiences
 * continue to use (and work with) existing standards (iCal)
 * minimize adoption costs
 * minimize resource costs
 
 # Proposed Solution
 
-As an optional addition to the existing pull based iCal flow, *iCal hooks* proposes a mechanism by which a consumer can register interest in a future change to the given requested resource.
+As an optional addition to the existing pull based iCal flow, *iCal Hooks* proposes a mechanism by which a consumer can register interest in a future change to the given requested resource.
 
-Supporting iCal providers can opt to inform requesting subscribed consumer of changes. Doing so, enables a simple near-realtime unidirectional synchronization primitive.
+Supporting iCal providers can opt to inform subscribed consumer of changes. Doing so, enables a simple near-realtime unidirectional synchronization primitive.
 
 # What iCal Hooks are not?
 
@@ -33,9 +33,13 @@ iCal Hooks does not solve bi-directional synchronization. Although also valuable
 # How does it work?
 
 1) It's based on iCal and **fully backward compatible**.
+
 2) A consumer includes a **http header** with a **hook url** when issueing a `GET` request to a iCal feed.
+
 3) A provider **stores the provided hook url** as a subcription to the given resource.
+
 4) When the iCal resource changes, the provider removes the earlier **hook url** and sends a `HEAD` request to the earlier provided hook URL. Informing the consumer that its data is most likely stale.
+
 5) The consumer issues another `GET` request, and if it wishes to once again subscribe the corresponding hook url.
 
 *note: If the consumer wants to **unsubscribe**, it just doesn't include the HTTP header on future `GET`'s*
