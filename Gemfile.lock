@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.3.8)
     adsf (1.2.0)
       rack (>= 1.0.0)
     autoprefixer-rails (6.0.3)
@@ -61,6 +62,8 @@ GEM
     http_parser.rb (0.6.0)
     json (1.8.3)
     kramdown (1.9.0)
+    launchy (2.4.3)
+      addressable (~> 2.3)
     listen (3.0.3)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -85,6 +88,7 @@ GEM
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.2.0)
     rack (1.6.4)
+    rake (10.4.2)
     rb-fsevent (0.9.6)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
@@ -107,9 +111,11 @@ DEPENDENCIES
   guard-nanoc
   guard-pow
   kramdown
+  launchy
   nanoc
   nokogiri
   pygments.rb
+  rake
 
 BUNDLED WITH
    1.10.6

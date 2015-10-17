@@ -11,6 +11,37 @@ task :remove_output_dir do
   FileUtils.rm_r('output') if File.exist?('output')
 end
 
+def preview(browser=false)
+  pids = [
+    Process.spawn("bundle exec nanoc view"),
+  ]
+
+  if browser
+    STDERR.puts "Opening a browser to preview the site..."
+    STDERR.puts "  You may need to refresh the page if the server hasn't loaded yet."
+    sleep 2
+    pids << Process.spawn("bundle exec launchy http://localhost:3000")
+  end
+
+  Signal.trap "INT" do
+    pids.each { |pid| Process.kill :INT, pid }
+  end
+
+  Process.waitall
+end
+
+desc "Build the site and host it localhost:3000"
+task :preview do
+  preview
+end
+
+namespace :preview do
+  desc "Build the site and open localhost:3000 in the default browser"
+  task :browser do
+    preview true
+  end
+end
+
 def commit_message
   publish_emojis = [':boom:', ':rocket:', ':metal:', ':bulb:', ':zap:',
     ':sailboat:', ':gift:', ':ship:', ':shipit:', ':sparkles:', ':rainbow:']
