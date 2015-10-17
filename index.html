@@ -27,41 +27,55 @@
 
 <h2 id="motivation">Motivation</h2>
 
-<p>Their’s a common trend to develop real-time applications, users don’t like stale data and latency as they degrade their experience. Whether it’s during a vacation rental booking process, where availability needs to be as real-time as possible to do instant booking or when connecting events or scheduling systems together like Google Calendar and your appointment software.</p>
+<p>Todays consumers are increasingly expecting instant on-demand experiences. Whether scheduling appointments or booking vacation rentals, fast &amp; accurate information results in more successful consumer interactions. Stale information, such as calendar data, only results in lost opportunities.</p>
 
-<h2 id="the-goal">The goal</h2>
+<p>… an example … 6 hour delay…</p>
 
-<p>The goal is to add the smallest layer possible to bring real-time support on top of current iCal technologies and with the minimum cost.</p>
+<p>Today, iCal consumption is primarily pull based. Consumers have a choice: pull frequently which reduces the risk of stale data but comes at a higher resource cost or pull less frequently, but serve more stale data.</p>
 
-<h2 id="what-is-ical-hooks">What is iCal Hooks?</h2>
+<h2 id="goals">Goals</h2>
 
-<p>iCal Hooks allow a iCal consumer to subscribe to changes so he’s notified in near real-time. It’s webhooks with a really simple subscription logic.</p>
+<ul>
+  <li>mitigate stale data, which results in degraded user experiences</li>
+  <li>continue to use (and work with) existing standards (iCal)</li>
+  <li>minimize adoption costs</li>
+  <li>minimize resource costs</li>
+</ul>
 
-<h2 id="what-is-not-ical-hooks">What is not iCal Hooks?</h2>
+<h2 id="proposed-solution">Proposed Solution</h2>
 
-<p>iCal Hooks does not solve synchronization issues but lower the latency for a provider to send changes to a consumer service. It then reduce conflicts and provide near real-time updates and can also lower server load as you don’t need high frequency pulls any longer.</p>
+<p>As an optional addition to the existing pull based iCal flow, <em>iCal Hooks</em> proposes a mechanism by which a consumer can register interest in a future change to the given requested resource.</p>
+
+<p>Supporting iCal providers can opt to inform subscribed consumer of changes. Doing so, enables a simple near-realtime unidirectional synchronization primitive.</p>
+
+<h2 id="what-ical-hooks-are-not">What iCal Hooks are not?</h2>
+
+<p>iCal Hooks does not solve bi-directional synchronization. Although also valuable, we consider this out-of-scope and recommend those interested in pursuing an alternatives.</p>
 
 <h2 id="how-does-it-work">How does it work?</h2>
 
 <p>1) It’s based on iCal and <strong>fully backward compatible</strong>.</p>
 
-<p>2) The consumer includes a <strong>http header</strong> with a <strong>hooks url</strong> when pulling the iCal feed.</p>
+<p>2) A consumer includes a <strong>http header</strong> with a <strong>hook url</strong> when issueing a <code>GET</code> request to a iCal feed.</p>
 
-<p>3) The provider <strong>store this hooks url</strong> and <strong>send a request</strong> to it the next time a change is made on it’s associated iCal feed. This URL is then removed as meant to be a one time subscription. This help handling throttling.</p>
+<p>3) A provider <strong>stores the provided hook url</strong> as a subcription to the given resource.</p>
 
-<p>4) If the consumer wants to <strong>unsubscribe</strong>, it just don’t include the HTTP header on future pulls.</p>
+<p>4) When the iCal resource changes, the provider removes the earlier <strong>hook url</strong> and sends a <code>HEAD</code> request to the earlier provided hook URL. Informing the consumer that its data is most likely stale.</p>
+
+<p>5) The consumer issues another <code>GET</code> request, and if it wishes to once again subscribe the corresponding hook url.</p>
+
+<p><em>note: If the consumer wants to <strong>unsubscribe</strong>, it just doesn’t include the HTTP header on future <code>GET</code>’s</em></p>
 
 <h2 id="example">Example</h2>
 
-<p><strong>Provider</strong> is the originating server and exposes an iCal feed at <code>http://provider.com/ical.ics</code></p>
-
-<p><strong>Consumer</strong> is a client subscribing to <code>http://provider.com/ical.ics</code></p>
+<p><strong>Provider</strong> is the originating server and exposes an iCal feed at <code>http://provider.com/ical.ics</code>
+<strong>Consumer</strong> is a client subscribing to <code>http://provider.com/ical.ics</code></p>
 
 <h3 id="step-1">Step 1</h3>
 
 <p><strong>Consumer</strong> make a GET request to <code>http://provider.com/ical.ics</code> including a <code>X-ICALHOOKS-URL</code> HTTP Header.</p>
 
-<p>Sample query:</p>
+<p>Sample Request:</p>
 
 <pre><code>GET http://provider.com/ical.ics HTTP/1.1
 X-ICALHOOKS-URL: http://consumer.com/icalhooks
@@ -73,17 +87,17 @@ X-ICALHOOKS-URL: http://consumer.com/icalhooks
 
 <p><strong>Provider</strong> receive the request from Consumer and:</p>
 
-<p>a) Store the iCal Hooks URL, <code>http://consumer.com/icalhooks</code> in our example.</p>
+<p>1) Store the iCal Hooks URL, <code>http://consumer.com/icalhooks</code> in our example.</p>
 
-<p>b) Respond as expected by returning the iCal feed.</p>
+<p>2) Respond as expected by returning the iCal feed.</p>
 
 <h3 id="step-3">Step 3</h3>
 
-<p>An update on <strong>Provider</strong> happen, Provider will:</p>
+<p>An update on <strong>Provider</strong> occurs, the provider will:</p>
 
-<p>a) make a <code>HEAD</code> request to the iCal Hooks URL stored in Step 2.</p>
+<p>1) make a <code>HEAD</code> request to the iCal Hooks URL stored in Step 2.</p>
 
-<p>b) remove this URL from it’s storage.</p>
+<p>2) remove this URL from it’s storage.</p>
 
 <p>Example query:</p>
 
