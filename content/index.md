@@ -1,6 +1,7 @@
 ---
 title: Makes iCal content updated after seconds, not hours
-subtitle: iCal Hooks is a lightweight subscription layer on top of iCal.
+subtitle: iCal Hooks is a lightweight subscription layer on top of iCal
+hero: true
 ---
 
 **Status**: This document is a first draft and made to [open discussions](https://github.com/BookingSync/icalhooks) to improve calendar update time and server load.
