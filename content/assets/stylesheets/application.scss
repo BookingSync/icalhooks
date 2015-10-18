@@ -37,3 +37,13 @@ h4, .h4, h5, .h5, h6, .h6 {
   padding: 80px $sheet-padding;
   text-align: center;
 }
+
+.alert {
+  padding: $sheet-padding;
+  margin: -1 * $sheet-padding;
+  border-radius: 0;
+}
+
+.alert-default {
+  background-color: $body-bg;
+}

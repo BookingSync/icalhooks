@@ -4,7 +4,9 @@ subtitle: iCal Hooks is a lightweight subscription layer on top of iCal
 hero: true
 ---
 
-**Status**: This document is a first draft and made to [open discussions](https://github.com/BookingSync/icalhooks) to improve calendar update time and server load.
+<div class="alert alert-default">
+  <p><strong>Status</strong>: This document is a first draft and made to <a href="https://github.com/BookingSync/icalhooks">open discussions</a> to improve calendar update time and server load.</p>
+</div>
 
 # Motivation
 
