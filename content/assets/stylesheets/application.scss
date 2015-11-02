@@ -47,3 +47,25 @@ h4, .h4, h5, .h5, h6, .h6 {
 .alert-default {
   background-color: $body-bg;
 }
+
+h1 strong {
+  font-size: 50px;
+}
+
+@media (min-width: $screen-xs) {
+  h1 strong {
+    font-size: 70px;
+  }
+}
+
+@media (min-width: $screen-sm) {
+  h1 strong {
+    font-size: 120px;
+  }
+}
+
+@media (min-width: $screen-md) {
+  h1 strong {
+    font-size: 142px;
+  }
+}
